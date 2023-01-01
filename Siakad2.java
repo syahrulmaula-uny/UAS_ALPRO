@@ -390,6 +390,6 @@ public class Siakad2 {
             }
                 System.out.println("Data telah diurutkan silahkan tampilkan data");
                 menu();
-            }
         }
+    }
 }
