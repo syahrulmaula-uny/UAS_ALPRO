@@ -4,15 +4,13 @@ public class Siakad2 {
     static Scanner scanner = new Scanner(System.in);
 
     // Array untuk menyimpan data mahasiswa
-    static String[][] data = new String[100][4];
+    static Mahasiswa[]  mahasiswa = new Mahasiswa[1000];
 
-
-    // static Mahasiswa[] Mahasiswa = new Mahasiswa[1000];
     static int totalData = 0;
     static boolean isRunning = true;
 
-    public static void main(String[] args) {
-        while (isRunning) {
+    public static void menu(){
+        while(isRunning){
             // Tampilkan menu
             System.out.println("=== SIAKAD ===");
             System.out.println("1. Tambah Data");
@@ -21,9 +19,9 @@ public class Siakad2 {
             System.out.println("4. Cari Data");
             System.out.println("5. Edit Data");
             System.out.println("6. Hapus Data");
-            System.out.println("7. Keluar");
+            System.out.println("7. UAS");
+            System.out.println("8. Keluar");
             System.out.print("Pilihan: ");
-
             // Baca input dari user
             int pilihan = scanner.nextInt();
 
@@ -48,16 +46,23 @@ public class Siakad2 {
                    hapusData();
                    break;
                 case 7:
+                   UAS();
+                   break;
+                case 8:
                     isRunning = false;
                     break;
                default:
                    System.out.println("Pilihan tidak valid!");
-            }   
+            }  
         }
+    }
+    public static void main(String[] args){
+        menu();
     }
 
     public static void tambahData() {
         // Baca input dari user
+        System.out.println("Silahkan Tambah Data Mahasiswa");
         System.out.print("NIM: ");
         String nim = scanner.next();
         System.out.print("Nama: ");
@@ -66,9 +71,10 @@ public class Siakad2 {
         String jurusan = scanner.next();
 
         // Tambahkan data ke array
-        data[totalData][0] = nim;
-        data[totalData][1] = nama;
-        data[totalData][2] = jurusan;
+        mahasiswa[totalData] = new Mahasiswa();
+        mahasiswa[totalData].setNama(nama);
+        mahasiswa[totalData].setNim(nim);
+        mahasiswa[totalData].setJurusan(jurusan);
         totalData++;
 
         System.out.println("Data berhasil ditambahkan!");
@@ -76,13 +82,12 @@ public class Siakad2 {
 
     public static void lihatData() {
         // Tampilkan data mahasiswa
-        System.out.println("Daftar Mahasiswa: ");
-        for (int i = 0; i < data.length; i++) {
-            if (data[i][0] != null) {
-                System.out.println("NIM: " + data[i][0]);
-                System.out.println("Nama: " + data[i][1]);
-                System.out.println("Jurusan: " + data[i][2]);
-            }
+        System.out.println("Berikut Data Diri Anda : ");
+        int i = 0;
+        while (i<totalData){
+            int nomer = i+1;
+            System.out.println(nomer+". " + mahasiswa[i].getNama() + "  " + mahasiswa[i].getNim() + "  " + mahasiswa[i].getJurusan());
+            i++;
         }
     }
 
@@ -90,7 +95,7 @@ public class Siakad2 {
         int pilihanUrutData;
         do {
             // Tampilkan menu Urutkan Data
-            System.out.println("=== SIAKAD ===");
+            System.out.println("Pilih Algoritma Pengurutan");
             System.out.println("1. Exchange Sort");
             System.out.println("2. Selection Sort");
             System.out.println("3. Quick Sort");
@@ -106,19 +111,14 @@ public class Siakad2 {
             switch (pilihanUrutData) {
                 case 1:
                     exchangeSort();
-                    break;
                 case 2:
                     selectionSort();
-                    break;
                 case 3:
-                    quickSort(0, data.length - 1);
-                    break;
+                    quickSort(mahasiswa,0,totalData-1);
                 case 4:
                     bubbleSort();
-                    break;
                 case 5:
                     shellSort();
-                    break;
                 default:
                     System.out.println("Pilihan tidak valid!");
                     break;
@@ -128,12 +128,14 @@ public class Siakad2 {
 
     // Method untuk mengurutkan data mahasiswa menggunakan Exchange Sort
     public static void exchangeSort() {
-        for (int i = 0; i < data.length - 1; i++) {
-            for (int j = i + 1; j < data.length; j++) {
-                if (data[i][1].compareTo(data[j][1]) > 0) {
-                    String[] temp = data[i];
-                    data[i] = data[j];
-                    data[j] = temp;
+        for(int x = 0; x<totalData; x++){
+            for(int y = x+1; y<totalData; y++){
+                int temp2 = Integer.parseInt(mahasiswa[x].getNim());
+                int temp3 = Integer.parseInt(mahasiswa[y].getNim());
+                if(temp2>=temp3){
+                Mahasiswa temp = mahasiswa[x];
+                mahasiswa[x] = mahasiswa [y];
+                mahasiswa [y] = temp;
                 }
             }
         }
@@ -141,74 +143,90 @@ public class Siakad2 {
 
     // Method untuk mengurutkan data mahasiswa menggunakan Selection Sort
     public static void selectionSort() {
-        for (int i = 0; i < data.length - 1; i++) {
-        int minIndex = i;
-        for (int j = i + 1; j < data.length; j++) {
-            if (data[j][1].compareTo(data[minIndex][1]) < 0) {
-            minIndex = j;
+        for(int i = 0;i<totalData-1;i++){
+            int min_x = i;
+            for(int j = i+1;j<totalData;j++){
+                int temp2 = Integer.parseInt(mahasiswa[j].getNim());
+                int temp3 = Integer.parseInt(mahasiswa[min_x].getNim());
+                if(temp2<=temp3){
+                    min_x = j;
+                    Mahasiswa temp = mahasiswa[min_x];
+                    mahasiswa[min_x] = mahasiswa[i];
+                    mahasiswa[i] = temp;
+                }   
             }
-        }
-        if (minIndex != i) {
-            String[] temp = data[i];
-            data[i] = data[minIndex];
-            data[minIndex] = temp; 
-        }
         }
     }
 
     // Method untuk mengurutkan data mahasiswa menggunakan Quick Sort
-    public static void quickSort(int left, int right) {
-        if (left < right) {
-          int pivotIndex = partition(left, right);
-          quickSort(left, pivotIndex - 1);
-          quickSort(pivotIndex + 1, right);
+    static void quickSort(Mahasiswa arr[], int low, int high) {
+        if (low < high) {
+            int pi = partition(arr, low, high);
+            quickSort(arr, low, pi - 1);
+            quickSort(arr, pi + 1, high);
         }
-      }
+    }
 
     // metode untuk mempartisi data mahasiswa
-    public static int partition(int left, int right) {
-        String pivot = data[right][1];
-        int i = left - 1;
-        for (int j = left; j < right; j++) {
-            if (data[j][1].compareTo(pivot) < 0) {
+    static int partition(Mahasiswa arr[], int low, int high) {
+        int coba = Integer.parseInt(arr[high].getNim());
+        int pivot = coba;
+        int i = (low - 1);
+        Mahasiswa temp;
+        for (int j = low; j <= high - 1; j++) {
+            int temp2 = Integer.parseInt(mahasiswa[j].getNim());
+            if (temp2 < pivot) {
                 i++;
-                String[] temp = data[i];
-                data[i] = data[j];
-                data[j] = temp;
+                temp = mahasiswa[j];
+                mahasiswa[j] = mahasiswa[i];
+                mahasiswa[i] = temp;
+
             }
         }
-        String[] temp = data[i + 1];
-        data[i + 1] = data[right];
-        data[right] = temp;
-        return i + 1;
+        temp = mahasiswa[i + 1];
+        mahasiswa[i + 1] = mahasiswa[high];
+        mahasiswa[high] = temp;
+        return (i + 1);
     }
 
     // Method untuk mengurutkan data mahasiswa menggunakan Bubble Sort
     public static void bubbleSort() {
-        for (int i = 0; i < data.length - 1; i++) {
-          for (int j = 0; j < data.length - i - 1; j++) {
-            if (data[j][1].compareTo(data[j + 1][1]) > 0) {
-                String[] temp = data[j];
-                data[j] = data[j + 1];
-                data[j + 1] = temp;
+        for(int i = 0; i<totalData-1;i++){
+            for(int j=0;j<totalData-i-1;j++){
+                int temp2 = Integer.parseInt(mahasiswa[j].getNim());
+                int temp3 = Integer.parseInt(mahasiswa[j+1].getNim());
+                if(temp2 >= temp3){
+                    Mahasiswa temp = mahasiswa[j];
+                    mahasiswa[j] = mahasiswa[j+1];
+                    mahasiswa[j+1] = temp;
+                }
             }
-          }
         }
       }
 
     // Method untuk mengurutkan data mahasiswa menggunakan Shell Sort
-    public static void shellSort() {
-        int gap = data.length / 2;
-        while (gap > 0) {
-            for (int i = gap; i < data.length; i++) {
-                int j = i;
-                while (j >= gap && data[j - gap][1].compareTo(data[j][1]) > 0) {
-                    // Tukar posisi dataMahasiswa[j] dan dataMahasiswa[j - gap]
-                    String[] temp = data[j];
-                    data[j] = data[j - gap];
-                    data[j - gap] = temp;
+    public static void shellSort(){
+        int juml=totalData-1;
+        int gap=juml/2;
+        boolean swap =true;
+        Mahasiswa temp;
+        while(gap>0){
+            swap=true;
+            while(swap==true){
+                swap=false;
+                for(int i=0;i<=(juml-gap);i++){
+                    int temp2 = Integer.parseInt(mahasiswa[i].getNim());
+                    int temp3 = Integer.parseInt(mahasiswa[i+gap].getNim());;
+                    if(temp2>temp3){
+                        temp=mahasiswa[i];
+                        mahasiswa[i]=mahasiswa[i+gap];
+                        mahasiswa[i+gap]=temp;
+                        swap=true;
+                    }
                 }
             }
+            gap=gap/2;
+
         }
     }
 
@@ -231,11 +249,16 @@ public class Siakad2 {
                     linearSearch();
                     break;
                case 2:
-                   binarySearch();
-                   break;
-               default:
-                   System.out.println("Pilihan tidak valid!");
-                   break;
+               System.out.print("Masukan Nim = ");
+               String filterValue=scanner.next();
+               Integer indexFound=binarySearch(mahasiswa,filterValue,0,totalData-1);
+               if(indexFound!=null){
+                   System.out.println("Data yang anda cari :");
+                   System.out.println(mahasiswa[indexFound].getNama() + " " + mahasiswa[indexFound].getNim() + " " + mahasiswa[indexFound].getJurusan());
+               }
+               else{
+                   System.out.println("Data tidak ditemukan");
+               }
             }
         } while (pilihanCariData != 3);
     }
@@ -243,124 +266,130 @@ public class Siakad2 {
     public static void linearSearch(){
         // Cari data mahasiswa
         System.out.print("Masukkan NIM mahasiswa yang ingin dicari: ");
-        String cari = scanner.next();
-        boolean found = false; // variabel untuk menandakan apakah data ditemukan atau tidak
-        // Lakukan sequential search untuk mencari data mahasiswa
-        for (int i = 0; i < data.length; i++) {
-            if (data[i][0].equals(cari)) {
-                // Data ditemukan, tampilkan informasi mahasiswa
-                System.out.println("Data ditemukan:");
-                System.out.println("NIM: " + data[i][0]);
-                System.out.println("Nama: " + data[i][1]);
-                System.out.println("Jurusan: " + data[i][2]);
-                found = true;
-                break;
+        String xdata = scanner.nextLine();
+        for (int i = 0; i < totalData; i++) {
+            String temp = mahasiswa[i].getNama();
+            String temp2 = mahasiswa[i].getNim();
+            if (xdata.equals(temp)){
+                System.out.println("Data Yang Dicari Ditemukan!!");
+                System.out.println(mahasiswa[i].getNama() + "  " + mahasiswa[i].getNim() + "  " + mahasiswa[i].getJurusan());
+                System.out.println(" ");
             }
-            if (!found) {
-                // Data tidak ditemukan
-                System.out.println("Data tidak ditemukan");
+            else if (xdata.equals(temp2)){
+                System.out.println("Data Yang Dicari Ditemukan!!");
+                System.out.println(mahasiswa[i].getNama() + "  " + mahasiswa[i].getNim() + "  " + mahasiswa[i].getJurusan());
+                System.out.println(" ");
             }
-        } 
+          }
     }
 
-    public static void binarySearch(){
-        // Cari data mahasiswa
-        System.out.print("Masukkan NIM mahasiswa yang ingin dicari: ");
-        String nim = scanner.next();
-        boolean found = false; // variabel untuk menandakan apakah data ditemukan atau tidak
-
-        // Lakukan binary search untuk mencari data mahasiswa
-        int low = 0;
-        int high = data.length - 1;
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            if (data[mid][0].compareTo(nim) == 0) {
-                // Data ditemukan, tampilkan informasi mahasiswa
-                System.out.println("Data ditemukan:");
-                System.out.println("NIM: " + data[mid][0]);
-                System.out.println("Nama: " + data[mid][1]);
-                System.out.println("Jurusan: " + data[mid][2]);
-                found = true;
-                break;
-            } 
-            else if (data[mid][0].compareTo(nim) < 0) {
-                low = mid + 1;
-            } 
+    public static Integer binarySearch(Mahasiswa []arr,String filterValue, int low, int high){
+        quickSort(mahasiswa,0,totalData-1);
+            if (low>high){
+                return null;
+            }
+    
             else {
-                high = mid - 1;
+                int mid=(low+high)/2;
+                int temp2 = Integer.parseInt(arr[mid].getNim());
+                if(Integer.valueOf(filterValue)==temp2){
+    
+                    return mid;
+                }
+                else if(Integer.valueOf(filterValue)>temp2){
+                    return binarySearch(mahasiswa,filterValue,mid+1,high);
+    
+                }
+                else{
+                   return binarySearch(mahasiswa,filterValue,low,mid-1);
+                }
             }
-            if (!found) {
-                // Data tidak ditemukan
-                System.out.println("Data tidak ditemukan");
-            }
-        }
     }
 
     public static void editData(){
+        int i = 0;
+        while (i<totalData){
+            System.out.print(i+1+ ". ");
+            System.out.println(mahasiswa[i].getNama() + " " + mahasiswa[i].getNim());
+            i++;
+        }
+
         // Edit data mahasiswa
-        System.out.print("Masukkan NIM mahasiswa yang akan diedit: ");
-        String nim = scanner.nextLine();
-        boolean dataDitemukan = false;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i][0] != null && data[i][0].equals(nim)) {
-                // Data mahasiswa ditemukan
-                dataDitemukan = true;
-                System.out.print("Masukkan nama baru: ");
-                String nimBaru = scanner.nextLine();
-                data[i][0] = nimBaru;
-                System.out.print("Masukkan nama baru: ");
-                String namaBaru = scanner.nextLine();
-                data[i][1] = namaBaru;
-                System.out.print("Masukkan jurusan baru: ");
-                String jurusanBaru = scanner.nextLine();
-                data[i][2] = jurusanBaru;
-            }
-        }
-        if (dataDitemukan) {
-            System.out.println("Data mahasiswa berhasil diedit");
-        } 
-        else {
-            System.out.println("Mahasiswa dengan NIM " + nim + " tidak ditemukan");
-        }
+        System.out.print("Masukan NIM Yang Akan Diubah = ");
+        int xdata = scanner.nextInt() - 1;
+        System.out.print("Masukan Nama Baru = ");
+        String nama = scanner.next();
+        System.out.print("Masukan NIM Baru = ");
+        String nim = scanner.next();
+        System.out.print("Masukan Jurusan Baru = ");
+        String jurusan = scanner.next();
+
+        mahasiswa[xdata].setNama(nama);
+        mahasiswa[xdata].setNim(nim);
+        mahasiswa[xdata].setJurusan(jurusan);
     }
 
     public static void hapusData(){
+        // Cari indeks mahasiswa dengan NIM yang diberikan
+        int i = 0;
+        while (i<totalData){
+            System.out.print(i +1 + ". ");
+            System.out.println(mahasiswa[i].getNama() + " " + mahasiswa[i].getNim());
+            i++;
+        }
+    
         // Hapus data mahasiswa
         System.out.print("Masukkan NIM mahasiswa yang akan dihapus: ");
-        String nim = scanner.nextLine();
-
-        // Cari indeks mahasiswa dengan NIM yang diberikan
-        int indeks = -1;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i][0] != null && data[i][0].equals(nim)) {
-                indeks = i;
-                break;
-              }
-        }
-
-        if (indeks != -1) {
-            // Tanya apakah akan dihapus
-            System.out.println("Data yang akan dihapus: " + data[indeks][0] + " - " + data[indeks][1] + " - " + data[indeks][2]);
-            System.out.print("Apakah Anda yakin akan menghapus data ini? (y/n) ");
-            String confirm = scanner.nextLine();
-          
-            if (confirm.equals("y")) {
-                // Hapus data
-                for (int i = indeks; i < data.length - 1; i++) {
-                    data[i] = data[i + 1];
+        int xdata = scanner.nextInt() - 1;
+    
+        System.out.println("Nama : "+mahasiswa[xdata].getNama());
+        System.out.println("Nim : "+mahasiswa[xdata].getNim());
+        System.out.println("Hapus Data ini? y/n");
+        String pil= scanner.next();
+        if(pil.equalsIgnoreCase("y")){
+            mahasiswa[xdata]=null;
+            for(i=0;i<totalData-1;i++){
+                if(mahasiswa[i]==null){
+                    mahasiswa[i]=mahasiswa[i+1];
+                    mahasiswa[i+1]=null;
                 }
-
-                data[data.length - 1] = null;
-                System.out.println("Data berhasil dihapus");
-
             }
-            else {
-              // Batalkan hapus data
-              System.out.println("Hapus data dibatalkan");
-            }
+            totalData=totalData-1;
+    
+            System.out.println("Data Terhapus!");
         }
-        else {
-            System.out.println("Mahasiswa dengan NIM " + nim + " tidak ditemukan");
+        else{
+    
         }
     }
+
+    public static void UAS(){
+        if(totalData == 0){ 
+            System.out.println("Tidak ada data");
+            menu();
+        }else{ //O(1)
+            int jarak = totalData - 1;
+            int susut = 13;
+            int urut = 0;
+            while(urut == 0){ 
+                jarak = (jarak*10)/susut;
+                if(jarak <= 1){ 
+                    jarak = 1;
+                    urut = 1;
+                    for(int i=0;i+jarak<totalData;i++){ 
+                        int temp2 = Integer.parseInt(mahasiswa[i].getNim());
+                        int temp3 = Integer.parseInt(mahasiswa[i+jarak].getNim());
+                        if(temp2 >(temp3)){ 
+                            Mahasiswa temp = mahasiswa[i];
+                            mahasiswa[i] = mahasiswa[i+jarak];
+                            mahasiswa[i+jarak] = temp;
+                            urut = 0;
+                        }
+                    }
+                }
+            }
+                System.out.println("Data telah diurutkan silahkan tampilkan data");
+                menu();
+            }
+        }
 }
